@@ -2,7 +2,8 @@ import { readFileSync } from 'fs';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import union from 'lodash/union';
-import { resolve } from 'path';
+import { extname, resolve } from 'path';
+import parse from './parsers.js';
 
 const types = {
   added: 'added',
@@ -16,6 +17,8 @@ const readFile = (filePath) => {
   const fullFilePath = resolve(process.cwd(), filePath);
   return readFileSync(fullFilePath, 'utf-8');
 };
+
+const getFileType = (filePath) => extname(filePath).split('.').join('');
 
 const buildTree = (object1, object2) => {
   const buildNodes = (obj1, obj2) => {
@@ -93,10 +96,16 @@ const format = (tree) => {
 };
 
 export default (filePath1, filePath2) => {
-  const data1 = readFile(filePath1);
-  const data2 = readFile(filePath2);
-  const object1 = JSON.parse(data1);
-  const object2 = JSON.parse(data2);
+  const object1 = parse(
+    readFile(filePath1),
+    getFileType(filePath1),
+  );
+
+  const object2 = parse(
+    readFile(filePath2),
+    getFileType(filePath2),
+  );
+
   const tree = buildTree(object1, object2);
 
   return format(tree);
