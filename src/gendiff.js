@@ -1,6 +1,8 @@
-import _ from 'lodash';
-import fs from 'fs';
-import path from 'path';
+import { readFileSync } from 'fs';
+import has from 'lodash/has';
+import sortBy from 'lodash/sortBy';
+import union from 'lodash/union';
+import { resolve } from 'path';
 
 const types = {
   added: 'added',
@@ -11,19 +13,19 @@ const types = {
 };
 
 const readFile = (filePath) => {
-  const fullFilePath = path.resolve(process.cwd(), filePath);
-  return fs.readFileSync(fullFilePath, 'utf-8');
+  const fullFilePath = resolve(process.cwd(), filePath);
+  return readFileSync(fullFilePath, 'utf-8');
 };
 
 const buildTree = (object1, object2) => {
   const buildNodes = (obj1, obj2) => {
-    const keys = _.union(Object.keys(obj1), Object.keys(obj2));
+    const keys = union(Object.keys(obj1), Object.keys(obj2));
 
-    return _.sortBy(keys).map((key) => {
+    return sortBy(keys).map((key) => {
       const value1 = obj1[key];
       const value2 = obj2[key];
 
-      if (!_.has(obj1, key)) {
+      if (!has(obj1, key)) {
         return {
           key,
           type: types.added,
@@ -31,7 +33,7 @@ const buildTree = (object1, object2) => {
         };
       }
 
-      if (!_.has(obj2, key)) {
+      if (!has(obj2, key)) {
         return {
           key,
           type: types.removed,
