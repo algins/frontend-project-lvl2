@@ -1,17 +1,11 @@
 import { readFileSync } from 'fs';
 import has from 'lodash/has';
+import isPlainObject from 'lodash/isPlainObject';
 import sortBy from 'lodash/sortBy';
 import union from 'lodash/union';
 import { extname, resolve } from 'path';
+import render from './formatters/index.js';
 import parse from './parsers.js';
-
-const types = {
-  added: 'added',
-  changed: 'changed',
-  removed: 'removed',
-  root: 'root',
-  unchanged: 'unchanged',
-};
 
 const readFile = (filePath) => {
   const fullFilePath = resolve(process.cwd(), filePath);
@@ -31,7 +25,7 @@ const buildTree = (object1, object2) => {
       if (!has(obj1, key)) {
         return {
           key,
-          type: types.added,
+          type: 'added',
           value: value2,
         };
       }
@@ -39,15 +33,23 @@ const buildTree = (object1, object2) => {
       if (!has(obj2, key)) {
         return {
           key,
-          type: types.removed,
+          type: 'removed',
           value: value1,
+        };
+      }
+
+      if (isPlainObject(value1) && isPlainObject(value2)) {
+        return {
+          key,
+          type: 'nested',
+          children: buildNodes(value1, value2),
         };
       }
 
       if (value1 !== value2) {
         return {
           key,
-          type: types.changed,
+          type: 'changed',
           value1,
           value2,
         };
@@ -55,7 +57,7 @@ const buildTree = (object1, object2) => {
 
       return {
         key,
-        type: types.unchanged,
+        type: 'unchanged',
         value: value1,
       };
     });
@@ -67,35 +69,7 @@ const buildTree = (object1, object2) => {
   };
 };
 
-const format = (tree) => {
-  const iter = (node) => {
-    switch (node.type) {
-      case types.added:
-        return `  + ${node.key}: ${node.value}`;
-      case types.removed:
-        return `  - ${node.key}: ${node.value}`;
-      case types.changed:
-        return [
-          `  - ${node.key}: ${node.value1}`,
-          `  + ${node.key}: ${node.value2}`,
-        ].join('\n');
-      case types.unchanged:
-        return `    ${node.key}: ${node.value}`;
-      case types.root:
-        return [
-          '{',
-          ...node.children.map((child) => iter(child)),
-          '}',
-        ].join('\n');
-      default:
-        throw new Error(`Unknown type: ${node.type}`);
-    }
-  };
-
-  return iter(tree);
-};
-
-export default (filePath1, filePath2) => {
+export default (filePath1, filePath2, format = 'stylish') => {
   const object1 = parse(
     readFile(filePath1),
     getFileType(filePath1),
@@ -108,5 +82,5 @@ export default (filePath1, filePath2) => {
 
   const tree = buildTree(object1, object2);
 
-  return format(tree);
+  return render(tree, format);
 };
