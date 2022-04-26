@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
-import has from 'lodash/has';
-import isPlainObject from 'lodash/isPlainObject';
-import sortBy from 'lodash/sortBy';
-import union from 'lodash/union';
+import has from 'lodash/has.js';
+import isPlainObject from 'lodash/isPlainObject.js';
+import sortBy from 'lodash/sortBy.js';
+import union from 'lodash/union.js';
 import { extname, resolve } from 'path';
 import render from './formatters/index.js';
 import parse from './parsers.js';

@@ -1,6 +1,6 @@
-import has from 'lodash/has';
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import has from 'lodash/has.js';
+import isObject from 'lodash/isObject.js';
+import isString from 'lodash/isString.js';
 
 const stringify = (value) => {
   if (isObject(value)) {
