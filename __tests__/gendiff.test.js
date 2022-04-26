@@ -23,6 +23,7 @@ test.each([
 test.each([
   'stylish',
   'plain',
+  'json',
 ])('Generate diff in %s format', (format) => {
   const filePath1 = getFixturePath('file1.json');
   const filePath2 = getFixturePath('file2.json');
