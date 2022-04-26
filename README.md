@@ -23,3 +23,7 @@ $ npm link
 ```
 
 ### Demo:
+* [JSON file diff in stylish (default) format](https://asciinema.org/a/ekz81C77cf3ibOMSOCeLxfCPV)
+* [YAML file diff in stylish (default) format](https://asciinema.org/a/hspwO43CxZ0SXIlttVuP2A7DI)
+* [JSON file diff in plain format](https://asciinema.org/a/ZIzql445JFjXgnGedIZ3MbnFK)
+* [JSON file diff in JSON format](https://asciinema.org/a/MZVNXhg9k1Cgzb4moUA6c0GpS)
