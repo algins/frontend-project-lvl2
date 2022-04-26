@@ -19,3 +19,14 @@ test.each([
   const expected = readFile('stylish');
   expect(actual).toBe(expected);
 });
+
+test.each([
+  'stylish',
+  'plain',
+])('Generate diff in %s format', (format) => {
+  const filePath1 = getFixturePath('file1.json');
+  const filePath2 = getFixturePath('file2.json');
+  const actual = genDiff(filePath1, filePath2, format);
+  const expected = readFile(format);
+  expect(actual).toBe(expected);
+});
