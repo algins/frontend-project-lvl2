@@ -4,8 +4,8 @@ import isPlainObject from 'lodash/isPlainObject.js';
 import sortBy from 'lodash/sortBy.js';
 import union from 'lodash/union.js';
 import { extname, resolve } from 'path';
-import render from './formatters/index.js';
-import parse from './parsers.js';
+import formatter from './formatters/index.js';
+import parser from './parsers.js';
 
 const readFile = (filePath) => {
   const fullFilePath = resolve(process.cwd(), filePath);
@@ -70,17 +70,16 @@ const buildTree = (object1, object2) => {
 };
 
 export default (filePath1, filePath2, format = 'stylish') => {
-  const object1 = parse(
-    readFile(filePath1),
-    getFileType(filePath1),
-  );
+  const data1 = readFile(filePath1);
+  const data2 = readFile(filePath2);
 
-  const object2 = parse(
-    readFile(filePath2),
-    getFileType(filePath2),
-  );
+  const type1 = getFileType(filePath1);
+  const type2 = getFileType(filePath2);
+
+  const object1 = parser(type1)(data1);
+  const object2 = parser(type2)(data2);
 
   const tree = buildTree(object1, object2);
 
-  return render(tree, format);
+  return formatter(format)(tree);
 };

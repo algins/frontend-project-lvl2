@@ -1,12 +1,12 @@
 import yaml from 'js-yaml';
 
-export default (data, type) => {
+export default (type) => {
   switch (type) {
     case 'json':
-      return JSON.parse(data);
+      return JSON.parse;
     case 'yaml':
     case 'yml':
-      return yaml.load(data);
+      return yaml.load;
     default:
       throw new Error(`Unknown type: ${type}`);
   }
